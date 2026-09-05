@@ -1,6 +1,6 @@
 # javaStudy
 
-基于 **Spring Boot + MyBatis + MySQL** 的用户注册 / 登录学习项目，用于练习 Web 接口开发与数据库交互。
+基于 **Spring Boot + MyBatis-Plus + MySQL** 的用户注册 / 登录学习项目，用于练习 Web 接口开发与数据库交互。
 
 > 本项目会**持续更新**，新功能、接口和代码示例会不断补充，更新内容会记录在下方「更新记录」中。
 
@@ -8,7 +8,7 @@
 
 - Java 17
 - Spring Boot 4.1.1
-- MyBatis（`mybatis-spring-boot-starter` 4.1.0）
+- MyBatis-Plus（`mybatis-plus-spring-boot4-starter` 3.5.17）
 - MySQL 8
 - Lombok
 - Maven
@@ -32,7 +32,7 @@ javaStudy
 │   │   │   ├── config       # 配置类
 │   │   │   ├── controller   # 接口层
 │   │   │   ├── model        # DTO / Entity / VO
-│   │   │   ├── repository   # MyBatis Mapper
+│   │   │   ├── repository   # MyBatis-Plus Mapper（BaseMapper）
 │   │   │   ├── service      # 业务逻辑层
 │   │   │   └── util         # 工具类
 │   │   └── resources
@@ -154,5 +154,6 @@ Content-Type: application/json
 
 - 2026-09-04：初始化项目并上传，完成用户注册 / 登录接口（Spring Boot + MyBatis + MySQL）。
 - 2026-09-05：新增修改密码、删除用户接口。
+- 2026-09-06：持久层接入 MyBatis-Plus，使用 BaseMapper 重构 Repository 与 Service。
 
 后续的每次代码更新都会追加到这里。
