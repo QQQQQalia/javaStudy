@@ -17,16 +17,16 @@ public interface UserRepository {
     public Optional<User> searchUserByUsername(String username);
 
     @Insert("insert into user(username, password) values (#{username},#{password})")
-    public int insertUser(RegisterDto form);
+    public boolean insertUser(RegisterDto form);
 
     @Select("select * from user where id = #{id}")
     public Optional<User> searchUserById(String id);
 
     @Update("update user set password = #{newPassword} where id = #{id}")
-    public int updateUserPassword(String id, String newPassword);
+    public boolean updateUserPassword(String id, String newPassword);
 
     @Delete("delete from user where id = #{id}")
-    public int deleteUser(String id);
+    public boolean deleteUser(String id);
 }
 
 

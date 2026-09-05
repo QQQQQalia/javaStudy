@@ -20,14 +20,13 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-
     public BaseVo<Void> registerFun(RegisterDto form) {
         Optional<User> Optuser = userRepository.searchUserByUsername(form.getUsername());
         if (Optuser.isPresent()) {
             return BaseVo.fail(null, "用户已注册");
         } else {
-            int result = userRepository.insertUser(form);
-            if (result == 1) {
+            boolean result = userRepository.insertUser(form);
+            if (result) {
                 return BaseVo.success(null);
             } else {
                 return BaseVo.fail(null, "注册失败");
@@ -59,8 +58,8 @@ public class UserService {
         } else {
             User user = Optuser.get();
             if (user.getPassword().equals(value.getOldPassword())) {
-                int result = userRepository.updateUserPassword(value.getId(), value.getNewPassword());
-                if (result == 1) {
+                boolean result = userRepository.updateUserPassword(value.getId(), value.getNewPassword());
+                if (result) {
                     return BaseVo.success(null);
                 } else {
                     return BaseVo.fail(null, "修改失败");
@@ -76,15 +75,13 @@ public class UserService {
         if (Optuser.isEmpty()) {
             return BaseVo.fail(null, "删除失败,用户不存在");
         } else {
-            int result = userRepository.deleteUser(value.getId());
-            if (result == 1) {
+            boolean result = userRepository.deleteUser(value.getId());
+            if (result) {
                 return BaseVo.success(null);
             } else {
                 return BaseVo.fail(null, "删除失败");
             }
-
         }
     }
 }
 
- 
