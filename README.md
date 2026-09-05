@@ -17,6 +17,8 @@
 
 - 用户注册：`POST /user/register`
 - 用户登录：`POST /user/login`
+- 修改密码：`POST /user/modifyPassword`
+- 删除用户：`POST /user/deleteUser`
 - 统一响应结构 `BaseVo<T>`：`{ "success": boolean, "msg": string, "data": T }`
 
 ## 项目结构
@@ -112,8 +114,45 @@ Content-Type: application/json
 }
 ```
 
+### 修改密码
+
+```http
+POST /user/modifyPassword
+Content-Type: application/json
+
+{
+  "id": "1",
+  "oldPassword": "123456",
+  "newPassword": "654321"
+}
+```
+
+成功响应：
+
+```json
+{ "success": true, "msg": "成功", "data": null }
+```
+
+### 删除用户
+
+```http
+POST /user/deleteUser
+Content-Type: application/json
+
+{
+  "id": "1"
+}
+```
+
+成功响应：
+
+```json
+{ "success": true, "msg": "成功", "data": null }
+```
+
 ## 更新记录
 
 - 2026-09-04：初始化项目并上传，完成用户注册 / 登录接口（Spring Boot + MyBatis + MySQL）。
+- 2026-09-05：新增修改密码、删除用户接口。
 
 后续的每次代码更新都会追加到这里。
