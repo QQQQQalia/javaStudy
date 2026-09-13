@@ -1,4 +1,4 @@
-package com.study.sprintbootwithsqldemo.util;
+package com.study.sprintbootwithsqldemo.utils;
 
 import org.springframework.stereotype.Component;
 
