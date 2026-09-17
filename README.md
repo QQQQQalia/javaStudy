@@ -32,10 +32,12 @@
 | `POST /user/login` | 用户登录，校验验证码，成功返回 token | 否 |
 | `POST /user/modifyPassword` | 修改密码 | 是 |
 | `POST /user/deleteUser` | 删除用户 | 是 |
+| `POST /user/list` | 用户列表分页查询，支持按 id / 用户名 / 创建时间范围筛选 | 是 |
 
 其他：
 
 - 统一响应结构 `BaseVo<T>`：`{ "success": boolean, "msg": string, "data": T }`
+- 分页响应结构 `ListVo<T>`：`{ "total": int, "list": T[], "pageNum": int, "pageSize": int, "hasMore": boolean }`
 - JWT 鉴权：除上面三个白名单接口外，其余接口都要在请求头带 `auth: <token>`
 - 参数校验：字段缺失或为空返回 `400` + 中文提示；业务失败返回 `200` + `success:false`
 
@@ -54,7 +56,8 @@ javaStudy
 │   │   │   ├── service      # 业务逻辑层
 │   │   │   └── utils        # JWT、时间等工具类
 │   │   └── resources
-│   │       └── application.yml
+│   │       ├── application.yml
+│   │       └── mapper       # 自定义 SQL 的 Mapper XML（走 MyBatis-Plus 默认的 mapper-locations）
 │   └── test
 ├── web                      # Vue 3 前端（登录页 / 注册页 / 用户中心 / 接口自检台）
 │   ├── src
@@ -62,6 +65,13 @@ javaStudy
 │   └── package.json
 └── mvnw / mvnw.cmd
 ```
+
+> `mapper` 目录名和 Java 包名 `repository` 不一致是正常的：MyBatis-Plus 默认的
+> `mapper-locations` 是 `classpath*:/mapper/**/*.xml`，匹配的是 **classpath 里的资源目录**，
+> 跟接口所在的 Java 包名无关。XML 也可以改成和接口「同名同包」放法，两种都行。
+
+> 自定义 SQL 的 XML **必须放在 `src/main/resources` 下**。`src/main/java` 里的 `.xml` 不会被打包
+> 进 `target/classes`，运行时会报 `Invalid bound statement (not found)`。
 
 ## 本地运行
 
@@ -194,6 +204,54 @@ auth: eyJ0ZXN0IjoiYXNkMTIzIiwiYWxnIjoiSFMyNTYifQ...
 
 不带 token 或 token 无效返回 `401`。
 
+### 用户列表（需要 token）
+
+```http
+POST /user/list
+Content-Type: application/json
+auth: eyJ0ZXN0IjoiYXNkMTIzIiwiYWxnIjoiSFMyNTYifQ...
+
+{
+  "pageNum": 1,
+  "pageSize": 3,
+  "username": "tom",
+  "id": "",
+  "startTime": "2026-09-01 00:00:00",
+  "endTime": "2026-09-30 23:59:59"
+}
+```
+
+`pageNum` / `pageSize` 必填；`id`、`username` 为模糊匹配，`startTime` / `endTime` 按 `create_time`
+做范围筛选（都传时间字符串即可），四个筛选条件都是可选的，不传就查全部。
+
+成功响应：
+
+```json
+{
+  "success": true,
+  "msg": "成功",
+  "data": {
+    "total": 10,
+    "list": [
+      {
+        "id": "0b2c9f1e-...",
+        "username": "tom",
+        "password": "123456",
+        "createTime": "2026-09-10 20:31:00",
+        "updateTime": null
+      }
+    ],
+    "pageNum": 1,
+    "pageSize": 3,
+    "hasMore": true
+  }
+}
+```
+
+> 已知待改进（尚未处理）：`list` 里目前直接返回 `User` 实体，`password` 会一并返回，建议后续换成
+> 只含 id / username / createTime 的 VO；`total` 目前是**全表数量**，不随筛选条件变化，会让前端
+> 分页条算错，建议让统计 SQL 带上同样的筛选条件。
+
 ### 参数校验失败
 
 请求字段缺失或为空时返回 `400`：
@@ -218,5 +276,6 @@ python scripts/api_check.py
 - 2026-09-05：新增修改密码、删除用户接口。
 - 2026-09-06：持久层接入 MyBatis-Plus，使用 BaseMapper 重构 Repository 与 Service。
 - 2026-09-13：新增验证码接口、登录验证码校验、JWT 生成与鉴权拦截器（含 CORS 携带 cookie）；登录密码错误提示统一为「用户名或密码错误」；新增 `@Valid` 参数校验与全局异常处理；新增 `web` 目录的 Vue 3 前端（登录页 / 注册页 / 用户中心）与接口自检脚本。
+- 2026-09-17：新增用户列表分页查询接口 `POST /user/list`（支持 id / 用户名 / 创建时间范围筛选）；自定义 SQL 的 Mapper XML 移到 `src/main/resources/mapper/`，修复打包运行时的 `Invalid bound statement (not found)` 报错；`User` 实体字段 `create_time` / `update_time` 改为驼峰 `createTime` / `updateTime`。
 
 后续的每次代码更新都会追加到这里。

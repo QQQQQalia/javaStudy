@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.sprintbootwithsqldemo.repository.UserRepository">
+    <select id="getUserList" resultType="com.study.sprintbootwithsqldemo.model.entity.User">
+        select * from user
+        <where>
+            <if test="form.id != null and form.id !=''">
+                and id like concat('%',#{form.id},'%')
+            </if>
+            <if test="form.username != null and form.username !=''">
+                and username like concat('%',#{form.username},'%')
+            </if>
+            <!-- 大于小于号是不识别的 ，>要写成 &gt; <要写成 &lt; -->
+            <if test="form.startTime != null and form.startTime !=''">
+                and create_time &gt; #{form.startTime}
+            </if>
+            <if test="form.endTime != null and form.endTime !=''">
+                and create_time &lt; #{form.endTime}
+            </if>
+        </where>
+        <!-- limit 必须写在 where 外面，写在 where 里面会拼成 "where limit ..." 直接语法报错 -->
+        limit #{form.pageSize} offset #{offset}
+    </select>
+    <select id="getCountUser" resultType="int">
+        select count(*) from user
+    </select>
+</mapper>

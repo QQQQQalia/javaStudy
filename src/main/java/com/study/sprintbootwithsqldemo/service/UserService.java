@@ -1,19 +1,18 @@
 package com.study.sprintbootwithsqldemo.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.study.sprintbootwithsqldemo.model.dto.LoginDto;
-import com.study.sprintbootwithsqldemo.model.dto.ModifyPasswordDto;
-import com.study.sprintbootwithsqldemo.model.dto.RegisterDto;
-import com.study.sprintbootwithsqldemo.model.dto.UserIdDto;
+import com.study.sprintbootwithsqldemo.model.dto.*;
 import com.study.sprintbootwithsqldemo.model.entity.User;
 import com.study.sprintbootwithsqldemo.model.vo.BaseVo;
+import com.study.sprintbootwithsqldemo.model.vo.ListVo;
 import com.study.sprintbootwithsqldemo.model.vo.UserVo;
 import com.study.sprintbootwithsqldemo.repository.UserRepository;
 import com.study.sprintbootwithsqldemo.utils.JwtUtils;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -151,4 +150,16 @@ public class UserService {
             }
         }
     }
+
+    // 分页查询
+    public BaseVo<ListVo<User>> getListFun(UserListDto form) {
+        int pageNum = form.getPageNum();
+        int pageSize = form.getPageSize();
+        int offset = (pageNum - 1) * pageSize;
+        List<User> userList = userRepository.getUserList(form, offset);
+        int totalNum = userRepository.getCountUser();
+        boolean hasMore = pageNum * pageSize < totalNum;
+       return BaseVo.success(ListVo.getListVo(totalNum, userList, pageNum, pageSize, hasMore));
+    }
 }
+

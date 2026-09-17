@@ -12,7 +12,7 @@ public class User {
     private String username;
     private String password;
     @TableField(fill = FieldFill.DEFAULT)
-    private String create_time;
+    private String createTime;
     @TableField(fill = FieldFill.DEFAULT)
-    private String update_time;
+    private String updateTime;
 }

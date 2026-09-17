@@ -1,19 +1,18 @@
 package com.study.sprintbootwithsqldemo.controller;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.study.sprintbootwithsqldemo.model.dto.LoginDto;
-import com.study.sprintbootwithsqldemo.model.dto.ModifyPasswordDto;
-import com.study.sprintbootwithsqldemo.model.dto.RegisterDto;
-import com.study.sprintbootwithsqldemo.model.dto.UserIdDto;
+import com.study.sprintbootwithsqldemo.model.dto.*;
+import com.study.sprintbootwithsqldemo.model.entity.User;
 import com.study.sprintbootwithsqldemo.model.vo.BaseVo;
+import com.study.sprintbootwithsqldemo.model.vo.ListVo;
 import com.study.sprintbootwithsqldemo.model.vo.UserVo;
 import com.study.sprintbootwithsqldemo.service.UserService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
-import jakarta.validation.Valid;
-import jakarta.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -75,5 +74,11 @@ public class UserController {
         String base64Image = Base64.getEncoder().encodeToString(imageByteArr);
 
         return "data:image/jpeg;base64," + base64Image;
+    }
+
+
+    @PostMapping("/list")
+    public BaseVo<ListVo<User>> getUserList(@RequestBody UserListDto form) {
+        return userService.getListFun(form);
     }
 }

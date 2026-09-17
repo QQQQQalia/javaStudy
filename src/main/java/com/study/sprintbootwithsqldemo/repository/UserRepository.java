@@ -1,8 +1,13 @@
 package com.study.sprintbootwithsqldemo.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.study.sprintbootwithsqldemo.model.dto.UserListDto;
 import com.study.sprintbootwithsqldemo.model.entity.User;
+import com.study.sprintbootwithsqldemo.model.vo.ListVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 
 @Mapper
@@ -22,6 +27,8 @@ public interface UserRepository extends BaseMapper<User> {
     //
     //    @Delete("delete from user where id = #{id}")
     //    public boolean deleteUser(String id);
+    public List<User> getUserList(@Param("form") UserListDto form, @Param("offset") int offset);
+    public int getCountUser();
 }
 
 
